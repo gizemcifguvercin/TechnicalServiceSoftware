@@ -1,0 +1,376 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package technicalservicesoftware;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import technicalservicesoftware.DatabaseAccessObject;
+import technicalservicesoftware.Islemler;
+
+/**
+ *
+ * @author Gizem
+ */
+public class SatisIslemleri extends javax.swing.JFrame {
+
+    private Connection baglanti;
+    private ResultSet sonuc;
+    private Statement ifade;
+    private DatabaseAccessObject dao=new DatabaseAccessObject();
+    
+    private int GrupBul(String tc){
+        String sql="SELECT * FROM \"Musteri\"";
+        try {
+            baglanti=dao.getBaglanti();
+            ifade=baglanti.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            sonuc=ifade.executeQuery(sql);
+            while(sonuc.next()){
+                if(tc.equals(sonuc.getString("musteri_tc"))){
+                    return sonuc.getInt("musteri_grup_id");
+                }
+   
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+     private double FiyatBul(int malzeme_id){
+        String sql="SELECT * FROM \"Malzeme\"";
+        try {
+            baglanti=dao.getBaglanti();
+            ifade=baglanti.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            sonuc=ifade.executeQuery(sql);
+            while(sonuc.next()){
+                if(malzeme_id==sonuc.getInt("malzeme_id")){
+                    return sonuc.getDouble("malzeme_satis_fiyati");
+                }
+   
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    private int IndirimBul(int grup_id){
+        String sql="SELECT * FROM \"MusteriGruplari\"";
+        try {
+            baglanti=dao.getBaglanti();
+            ifade=baglanti.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            sonuc=ifade.executeQuery(sql);
+            while(sonuc.next()){
+                if(grup_id==sonuc.getInt("grup_id")){
+                    return sonuc.getInt("indirim_miktari");
+                }
+   
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    private void verileriGetir(){
+        String sql="SELECT * FROM \"MalzemeSatisi\"";
+        try {
+            baglanti=dao.getBaglanti();
+            ifade=baglanti.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            sonuc=ifade.executeQuery(sql);
+            sonuc.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       
+    }
+    private void verileriGoster(){
+        txtBosalt();
+        if (sonuc!=null){
+            try {
+                tf_kayit.setText(sonuc.getString("satilan_malzeme_id")); 
+                tf_kod.setText(sonuc.getString("malzeme_id"));
+                tf_tc.setText(sonuc.getString("musteri_tc"));
+                tf_tarih.setText(sonuc.getString("satildigi_tarih"));
+                
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+           
+            
+        }
+    }
+    public int kacincimalzemesatisi(){
+            int row=0;
+            try {
+                baglanti=dao.getBaglanti();
+                ifade=baglanti.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+                sonuc=ifade.executeQuery("SELECT * FROM \"MalzemeSatisi\"");
+                if(sonuc!=null){
+                    sonuc.last();
+                    row=sonuc.getRow();
+                    sonuc.beforeFirst(); //imlec basa alınır
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return row;
+        }
+    public static String now(String dateFormat) 
+    {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(cal.getTime());
+    }
+    private void txtBosalt(){
+        tf_kayit.setText("");
+        tf_kod.setText("");
+        tf_tc.setText("");
+        tf_tarih.setText("");
+        tf_kayit.requestFocus();
+    }
+    private void ilk_islemler(){
+        tf_kayit.requestFocus();
+        String DateTime = now("dd-MM-yyy");
+        tf_tarih.setText(DateTime);
+        tf_kayit.setText(String.valueOf(kacincimalzemesatisi()+1));
+        verileriGetir();
+    }
+  
+   
+   
+   
+    public SatisIslemleri() {
+        initComponents();
+        ilk_islemler();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        btn_geri = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        tf_kayit = new javax.swing.JTextField();
+        tf_kod = new javax.swing.JTextField();
+        tf_tc = new javax.swing.JTextField();
+        tf_tarih = new javax.swing.JTextField();
+        btn_onay = new javax.swing.JButton();
+        txt_ara = new javax.swing.JTextField();
+        btn_ara = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel1.setText("SATIŞ İŞLEMLERİ");
+
+        btn_geri.setText("İşlemlere Dön");
+        btn_geri.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_geriActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Kayıt Numarası:");
+
+        jLabel3.setText("Malzeme Kodu:");
+
+        jLabel4.setText("Müşteri TC:");
+
+        jLabel5.setText("Satış Tarihi:");
+
+        tf_kayit.setEditable(false);
+
+        btn_onay.setText("ONAYLA");
+        btn_onay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_onayActionPerformed(evt);
+            }
+        });
+
+        btn_ara.setText("ARA");
+        btn_ara.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_araActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                        .addComponent(btn_geri)
+                        .addGap(30, 30, 30))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tf_kod, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                                    .addComponent(btn_onay, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tf_kayit, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                    .addComponent(tf_tc)
+                                    .addComponent(tf_tarih))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txt_ara, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_ara)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(btn_geri))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(tf_kayit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3))
+                    .addComponent(tf_kod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tf_tc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(tf_tarih, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addComponent(btn_onay)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_ara, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_ara))
+                .addContainerGap(39, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_geriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_geriActionPerformed
+        Islemler islem=new Islemler();
+        islem.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btn_geriActionPerformed
+
+    private void btn_onayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_onayActionPerformed
+       int id=Integer.parseInt(tf_kayit.getText());
+       int kod=Integer.parseInt(tf_kod.getText());
+       String tc=tf_tc.getText();
+       String tarih=tf_tarih.getText();
+       int grupid=0;
+       int indirim_miktari=0;
+       double db_fiyat=0;
+       double musteriye_ozel_fiyat=0;
+       try {
+            grupid=GrupBul(tc);
+            indirim_miktari=IndirimBul(grupid);
+            db_fiyat=FiyatBul(kod);
+            musteriye_ozel_fiyat=(db_fiyat-((db_fiyat*indirim_miktari)/100));
+            ifade=baglanti.createStatement();
+                     String sql="INSERT INTO \"MalzemeSatisi\" VALUES ("+id+","+kod+",'"+tc+"','"+tarih+"',"+musteriye_ozel_fiyat+")";
+                     ifade.executeUpdate(sql);
+                     verileriGetir();
+                     verileriGoster();
+        } catch (Exception ex) {
+                       ex.printStackTrace();
+               } 
+        
+           
+    }//GEN-LAST:event_btn_onayActionPerformed
+
+    private void btn_araActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_araActionPerformed
+        String satilan_malzeme_id=txt_ara.getText();
+        try {
+            int mevcut_satir=sonuc.getRow();
+            sonuc.first();
+            sonuc.previous();
+            int row=0;
+            boolean bulundu=false;
+            while(sonuc.next()){
+                row++;
+                if(sonuc.getString("satilan_malzeme_id").equals(satilan_malzeme_id)){
+                    bulundu=true;
+                    break;
+                } 
+            }
+            if(bulundu){
+                sonuc.absolute(row);
+                }
+            else{
+                sonuc.absolute(mevcut_satir);
+                       
+                }
+             verileriGoster();
+        }
+            catch (SQLException ex) {
+        }                           
+    }//GEN-LAST:event_btn_araActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new SatisIslemleri().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_ara;
+    private javax.swing.JButton btn_geri;
+    private javax.swing.JButton btn_onay;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JTextField tf_kayit;
+    private javax.swing.JTextField tf_kod;
+    private javax.swing.JTextField tf_tarih;
+    private javax.swing.JTextField tf_tc;
+    private javax.swing.JTextField txt_ara;
+    // End of variables declaration//GEN-END:variables
+}
