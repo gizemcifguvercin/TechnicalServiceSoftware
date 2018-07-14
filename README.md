@@ -29,8 +29,6 @@ $ <span class="pl-c1">cd</span> TechnicalServiceSoftware/
 
 ![image](https://user-images.githubusercontent.com/13080669/42724558-557d87d4-877d-11e8-9e8c-c394085d7126.png)
 
-
-![image](https://user-images.githubusercontent.com/13080669/42724558-557d87d4-877d-11e8-9e8c-c394085d7126.png)
 ![image](https://user-images.githubusercontent.com/13080669/42724562-6bceb922-877d-11e8-9d78-d9b72b7c8b31.png)
 
 
